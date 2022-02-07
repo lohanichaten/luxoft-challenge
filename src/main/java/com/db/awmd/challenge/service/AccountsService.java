@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.db.awmd.challenge.domain.Account;
-import com.db.awmd.challenge.exception.InfSufficientBalanceException;
 import com.db.awmd.challenge.model.TransferBalanceRequest;
 import com.db.awmd.challenge.repository.AccountsRepository;
 
@@ -17,10 +16,14 @@ public class AccountsService {
 
   @Getter
   private final AccountsRepository accountsRepository;
+  
+  @Getter
+  private final NotificationService notificationService;
 
   @Autowired
-  public AccountsService(AccountsRepository accountsRepository) {
+  public AccountsService(AccountsRepository accountsRepository,NotificationService notificationService) {
     this.accountsRepository = accountsRepository;
+    this.notificationService=notificationService;
   }
 
   public void createAccount(Account account) {
@@ -41,8 +44,9 @@ public class AccountsService {
 	 
 	 payorAccount.withdraw(balanceTransfer);
 	 payeeAccount.deposit(balanceTransfer);
+	 this.notificationService.notifyAboutTransfer(payorAccount, "Amount debited:"+balanceTransfer);
+	 this.notificationService.notifyAboutTransfer(payeeAccount, "Amount credited:"+balanceTransfer);
 	 
-	
   }
   
   

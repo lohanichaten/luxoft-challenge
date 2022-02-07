@@ -39,7 +39,6 @@ public class Account {
   
   
   public synchronized void withdraw(BigDecimal amount) {
-	  System.out.println("withdrawing amount "+amount+" balance is "+balance);
 	  if(this.balance.compareTo(amount)<0) {
 		    throw new InfSufficientBalanceException("Insufficient amount");
 	  }
@@ -49,7 +48,7 @@ public class Account {
   }
   
   public synchronized void deposit(BigDecimal amount) {
-	  System.out.println("Deposit amount "+amount+" balance is "+balance);
+	
 	  this.balance=this.balance.add(amount);
   }
   

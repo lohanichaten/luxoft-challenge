@@ -106,8 +106,30 @@ public class AccountsControllerTest {
   
   
   @Test
-  public void transferBalanceWithSufficientBalance() throws Exception {
+  public void transferBalanceWithInvalidAmount() throws Exception{
 	  String payerAccountId = "Id-" + System.currentTimeMillis();
+	    Account payorAccount = new Account(payerAccountId, new BigDecimal("100"));
+	    this.accountsService.createAccount(payorAccount);
+	    
+	    String payeeAccountId = "Id-" + System.currentTimeMillis()+200;
+	    Account payeeAccount = new Account(payeeAccountId, new BigDecimal("0"));
+	    this.accountsService.createAccount(payeeAccount);
+	    
+	    
+	    
+	    this.mockMvc.perform(post("/v1/accounts/balancetransfer").contentType(MediaType.APPLICATION_JSON)
+	    		 .content("{\"payorAccountId\":\""+payerAccountId+"\",\"payeeAccountId\":"+payeeAccountId+"\",\"transferAmmount\":-1}")).andExpect(status().isBadRequest());
+	  
+	  
+	  
+  }
+  
+  
+  
+  
+  @Test
+  public void transferBalanceWithSufficientBalance() throws Exception {
+	  	String payerAccountId = "Id-" + System.currentTimeMillis();
 	    Account payorAccount = new Account(payerAccountId, new BigDecimal("100"));
 	    this.accountsService.createAccount(payorAccount);
 	    
@@ -139,6 +161,9 @@ public class AccountsControllerTest {
 	     
 	       
 	  }
+  
+  
+  
   }
   
   
